@@ -25,7 +25,7 @@ button {
   button:hover, button:focus, input[type="button"]:hover, input[type="button"]:focus, input[type="reset"]:hover, input[type="reset"]:focus, input[type="submit"]:hover, input[type="submit"]:focus,
   button:hover,
   button:focus {
-    background-color: #1b557a;
+    background-color: #000000;
     color: #fff; }
   button:disabled, input[type="button"]:disabled, input[type="reset"]:disabled, input[type="submit"]:disabled,
   button:disabled {
@@ -198,11 +198,10 @@ p {
   margin: 0 0 14.4px; }
 
 a {
-  color: #2980b9;
+  color: #000000;
   text-decoration: none; }
   a:active, a:focus, a:hover {
-    color: #20638f;
-    text-decoration: underline; }
+    color: #8C8C8C; }
   a:active, a:focus {
     outline: none; }
 
@@ -306,8 +305,8 @@ pre code.hljs {
 *	Header
 */
 .navigation {
-  box-shadow: 0 2px #70aad0;
-  padding: 0 1em;
+  box-shadow: 0 2px #ffff;
+  /* padding: 0 1em; */
   margin: 0;
   position: fixed;
   top: 0;
@@ -559,7 +558,7 @@ pre code.hljs {
 */
 .site-footer {
   padding: 1em 1em 2em 1em;
-  background-color: #70aad0;
+  background-color: #000000;
   color: #fff;
   /*
   *	Site Navigation (left)
