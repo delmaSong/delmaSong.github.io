@@ -9,8 +9,7 @@ post-header: true
 header-img: img/about.jpg
 ---
 
-iOS 앱 개발자 송다영입니다 
-
+iOS 앱 개발자 송다영입니다. 
 
 
 <br />

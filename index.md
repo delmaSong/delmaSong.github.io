@@ -3,14 +3,14 @@ layout: default
 title: "delmaSong"
 main: true
 subtitle: iOS App Developer delmaSong at POSTYPE
-description: delmaSong, who is a iOS App Developer based in Seoul, South Korea. | '송다영' iOS 앱 개발자입니다. 포스타입에서 일합니다.
+description: delmaSong, who is an iOS App Developer based in Seoul, South Korea. | '송다영' iOS 앱 개발자입니다. 포스타입에서 일합니다.
 ---
 <div class="intro-animation">
 <section class="explanation">
     <h1 class="intro">
     I'm delmaSong,
     </h1>
-    <h1 class="intro">a iOS App Developer at
+    <h1 class="intro">an iOS App Developer at
         <div class="intro-link">
             <a class="transition" href="https://www.postype.com" target="_blank">
                 POSTYPE
