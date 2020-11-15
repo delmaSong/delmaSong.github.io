@@ -1,0 +1,406 @@
+I"�{<p><br /></p>
+
+<blockquote>
+  <p>해당 글은, 원문 글쓴이의 동의를 얻어 ‘<a href="https://medium.com/better-programming/solid-principles-application-to-swift-development-1de8d7c57fdf">SOLID Pirincipels Applied to Swift Development</a>‘를 번역한 글입니다. 매끄러운 의미 전달을 위해 의역한 부분이 있습니다.</p>
+</blockquote>
+
+<p><br /></p>
+
+<h2 id="introduction">Introduction</h2>
+<p>개발자로서, 아마 SOLID 원칙을 들어보거나 사용해 본 적이 있을 것이다. Robert C. Martin(Uncle Bob)은 그의 저서 <code class="language-plaintext highlighter-rouge">Agile Software Development: Principles, Patterns, and Practices</code>에서 디자인 패턴과 관련된 객체 지향 프로그래밍의 5가지 기본 원칙인 SOLID를 언급하고 있다.</p>
+
+<p>우리가 이 다섯가지 원칙을 적용한다면:</p>
+<ul>
+  <li>쉽게 변경이 가능한 유연한 코드를 가지게 된다. 이것은 재사용과 유지 관리가 가능하다.</li>
+  <li>그렇게 개발된 소프트웨어는 안정되고, 탄탄하며 확장성이 뛰어날 것이다. (우리는 쉽게 새로운 기능을 추가할 수 있다.)</li>
+  <li>디자인 패턴의 사용과 함께, 응집력이 높고(시스템의 요소가 밀접하게 연관되어있다) 결합도가 낮은(요소들 간의 의존도가 낮다) 소프트웨어를 만들 수 있다.</li>
+</ul>
+
+<p><br /></p>
+
+<h3 id="solid란">SOLID란</h3>
+<ul>
+  <li><strong>S</strong> (Single Responsibility Principle) : 단일 책임 원칙</li>
+  <li><strong>O</strong> (Open/Close Principle) : 개방/폐쇄 원칙</li>
+  <li><strong>L</strong> (Liscov Substitution Principle) : 리스코브 치환 원칙</li>
+  <li><strong>I</strong> (Interface Segregation Principle) : 인터페이스 분리 원칙</li>
+  <li><strong>D</strong> (Dependency Inversion Principle) : 의존성 역전 원칙</li>
+</ul>
+
+<p><br /></p>
+<hr />
+
+<h2 id="single-responsibility-principle-단일-책임-원칙">Single Responsibility Principle (단일 책임 원칙)</h2>
+<p><br /></p>
+
+<p>이 원칙에 따르면, 클래스는 하나의 이유로만 변화해야 한다. 다시 말해, 클래스는 한가지의 책임만 가지고 있어야 한다.</p>
+
+<p>예시를 보자.</p>
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">LoginUser</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">login</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">data</span> <span class="o">=</span> <span class="nf">authenticareUserViaAPI</span><span class="p">()</span>
+        <span class="k">let</span> <span class="nv">user</span> <span class="o">=</span> <span class="nf">decodeUser</span><span class="p">(</span><span class="nv">data</span><span class="p">:</span> <span class="n">data</span><span class="p">)</span>
+        <span class="nf">saveToDB</span><span class="p">(</span><span class="nv">array</span><span class="p">:</span> <span class="n">array</span><span class="p">)</span>
+    <span class="p">}</span>
+    
+    <span class="kd">private</span> <span class="kd">func</span> <span class="nf">authenticareUserViaAPI</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Data</span> <span class="p">{</span>
+        <span class="c1">// Call server to authenticate and return user's info</span>
+    <span class="p">}</span>
+    
+    <span class="kd">private</span> <span class="kd">func</span> <span class="nf">decodeUser</span><span class="p">(</span><span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">User</span> <span class="p">{</span>
+        <span class="c1">// Decode data (Codable protocol) into User object</span>
+    <span class="p">}</span>
+    
+    <span class="kd">private</span> <span class="kd">func</span> <span class="nf">saveUserInfoOnDatabase</span><span class="p">(</span><span class="nv">user</span><span class="p">:</span> <span class="kt">User</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// Save User info onto database</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><br /></p>
+
+<p>이 클래스는 인증, 디코딩, 저장의 3가지 책임을 가지고 있다. 단일 책임 원칙을 충족하기 위해서는 이 책임을 각각의 작은 클래스로 분리해야 한다.</p>
+
+<p><br /></p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">LoginUser</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">oAuthHandler</span><span class="p">:</span> <span class="kt">OAuthHandler</span>
+    <span class="k">let</span> <span class="nv">decodeHandler</span><span class="p">:</span> <span class="kt">DecodeHandler</span>
+    <span class="k">let</span> <span class="nv">databaseHandler</span><span class="p">:</span> <span class="kt">DataBaseHandler</span>
+    
+    <span class="nf">init</span><span class="p">(</span><span class="nv">oAuthHandler</span><span class="p">:</span> <span class="kt">OAuthHandler</span><span class="p">,</span> <span class="nv">decodeHandler</span><span class="p">:</span> <span class="kt">DecodeHandler</span><span class="p">,</span> <span class="nv">databaseHandler</span><span class="p">:</span> <span class="kt">DataBaseHandler</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">oAuthHandler</span> <span class="o">=</span> <span class="n">oAuthHandler</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">decodeHandler</span> <span class="o">=</span> <span class="n">decodeHandler</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">databaseHandler</span> <span class="o">=</span> <span class="n">databaseHandler</span>
+    <span class="p">}</span>
+    
+    <span class="kd">func</span> <span class="nf">login</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">data</span> <span class="o">=</span> <span class="n">oAuthHandler</span><span class="o">.</span><span class="nf">authenticareUserViaAPI</span><span class="p">()</span>
+        <span class="k">let</span> <span class="nv">user</span> <span class="o">=</span> <span class="n">decodeHandler</span><span class="o">.</span><span class="nf">decodeUser</span><span class="p">(</span><span class="nv">data</span><span class="p">:</span> <span class="n">data</span><span class="p">)</span>
+        <span class="n">databaseHandler</span><span class="o">.</span><span class="nf">saveUserInfoOnDatabase</span><span class="p">(</span><span class="nv">user</span><span class="p">:</span> <span class="n">user</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="kt">OAuthHandler</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">authenticareUserViaAPI</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Data</span> <span class="p">{</span>
+        <span class="c1">// Call server to authenticate and return user's info</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="kt">DecodeHandler</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">decodeUser</span><span class="p">(</span><span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">User</span> <span class="p">{</span>
+        <span class="c1">// Decode data (Codable protocol) into User object</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="kt">DataBaseHandler</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">saveUserInfoOnDatabase</span><span class="p">(</span><span class="nv">user</span><span class="p">:</span> <span class="kt">User</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// Save User info onto database</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><br /></p>
+<hr />
+
+<p><br /></p>
+
+<h2 id="openclose-principle-개방폐쇄-원칙">Open/Close Principle (개방/폐쇄 원칙)</h2>
+
+<p>이 원칙에 따르면, 확장은 클래스의 행동의 변화 없이 가능해야 한다.(확장에는 열려있고 변경에는 닫혀있어야 함) 이것은 추상화에 의해 가능해진다.
+<br /></p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">Scrapper</span> <span class="p">{</span>
+
+    <span class="kd">func</span> <span class="nf">scrapVehicles</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">cars</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="kt">Car</span><span class="p">(</span><span class="nv">brand</span><span class="p">:</span> <span class="s">"Ford"</span><span class="p">),</span>
+            <span class="kt">Car</span><span class="p">(</span><span class="nv">brand</span><span class="p">:</span> <span class="s">"Peugeot"</span><span class="p">),</span>
+            <span class="kt">Car</span><span class="p">(</span><span class="nv">brand</span><span class="p">:</span> <span class="s">"Toyota"</span><span class="p">),</span>
+        <span class="p">]</span>
+
+        <span class="n">cars</span><span class="o">.</span><span class="n">forEach</span> <span class="p">{</span> <span class="n">car</span> <span class="k">in</span>
+            <span class="nf">print</span><span class="p">(</span><span class="n">car</span><span class="o">.</span><span class="nf">getScrappingAddress</span><span class="p">())</span>
+        <span class="p">}</span>
+
+        <span class="k">let</span> <span class="nv">trucks</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="kt">Truck</span><span class="p">(</span><span class="nv">brand</span><span class="p">:</span> <span class="s">"Volvo"</span><span class="p">),</span>
+            <span class="kt">Truck</span><span class="p">(</span><span class="nv">brand</span><span class="p">:</span> <span class="s">"Nissan"</span><span class="p">),</span>
+        <span class="p">]</span>
+
+        <span class="n">trucks</span><span class="o">.</span><span class="n">forEach</span> <span class="p">{</span> <span class="n">truck</span> <span class="k">in</span>
+            <span class="nf">print</span><span class="p">(</span><span class="n">truck</span><span class="o">.</span><span class="nf">getScrappingAddress</span><span class="p">())</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="kt">Car</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">brand</span><span class="p">:</span> <span class="kt">String</span>
+
+    <span class="nf">init</span><span class="p">(</span><span class="nv">brand</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">brand</span> <span class="o">=</span> <span class="n">brand</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">getScrappingAddress</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">String</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="s">"Cars scrapping address"</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="kt">Truck</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">brand</span><span class="p">:</span> <span class="kt">String</span>
+
+    <span class="nf">init</span><span class="p">(</span><span class="nv">brand</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">brand</span> <span class="o">=</span> <span class="n">brand</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">getScrappingAddress</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">String</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="s">"Trucks scrapping address"</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+</code></pre></div></div>
+<p><br /></p>
+
+<p>각각의 새로운 타입의 vehicle에 대해, <code class="language-plaintext highlighter-rouge">getScrapingAddress()</code>는 다시 구현되어야만 한다. 이것은 개방/폐쇄 원칙을 어기게 된다.</p>
+
+<p>이것을 해결하기 위해, <code class="language-plaintext highlighter-rouge">getScrapingAddress()</code> 메소드를 포함한 <code class="language-plaintext highlighter-rouge">Scrappable</code> 프로토콜을 만든다.
+<br /></p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">protocol</span> <span class="kt">Scrappable</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">getScrapingAddress</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">String</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="kt">Scrapper</span> <span class="p">{</span>
+
+    <span class="kd">func</span> <span class="nf">getScrapingAddress</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">vehicles</span><span class="p">:</span> <span class="p">[</span><span class="kt">Scrappable</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="kt">Car</span><span class="p">(</span><span class="nv">brand</span><span class="p">:</span> <span class="s">"Ford"</span><span class="p">),</span>
+            <span class="kt">Car</span><span class="p">(</span><span class="nv">brand</span><span class="p">:</span> <span class="s">"Peugeot"</span><span class="p">),</span>
+            <span class="kt">Car</span><span class="p">(</span><span class="nv">brand</span><span class="p">:</span> <span class="s">"Toyota"</span><span class="p">),</span>
+            <span class="kt">Truck</span><span class="p">(</span><span class="nv">brand</span><span class="p">:</span> <span class="s">"Volvo"</span><span class="p">),</span>
+            <span class="kt">Truck</span><span class="p">(</span><span class="nv">brand</span><span class="p">:</span> <span class="s">"Nissan"</span><span class="p">),</span>
+        <span class="p">]</span>
+
+        <span class="n">vehicles</span><span class="o">.</span><span class="n">forEach</span> <span class="p">{</span> <span class="n">vehicle</span> <span class="k">in</span>
+            <span class="nf">print</span><span class="p">(</span><span class="n">vehicle</span><span class="o">.</span><span class="nf">getScrapingAddress</span><span class="p">())</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="kt">Car</span><span class="p">:</span> <span class="kt">Scrappable</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">brand</span><span class="p">:</span> <span class="kt">String</span>
+
+    <span class="nf">init</span><span class="p">(</span><span class="nv">brand</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">brand</span> <span class="o">=</span> <span class="n">brand</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">getScrapingAddress</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">String</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="s">"Cars scrapping address"</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="kt">Truck</span><span class="p">:</span> <span class="kt">Scrappable</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">brand</span><span class="p">:</span> <span class="kt">String</span>
+
+    <span class="nf">init</span><span class="p">(</span><span class="nv">brand</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">brand</span> <span class="o">=</span> <span class="n">brand</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">getScrapingAddress</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">String</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="s">"Trucks scrapping address"</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><br /></p>
+<hr />
+
+<p><br /></p>
+
+<h2 id="liscov-substitution-principle-리스코브-치환-원칙">Liscov Substitution Principle (리스코브 치환 원칙)</h2>
+<p>1987년 <a href="https://en.wikipedia.org/wiki/Barbara_Liskov">Barbara Liskov</a>에 의해 소개된 이 원칙은, 프로그램에서 어떤 클래스도 그 기능에 영향을 주지 않고 해당 클래스의 서브클래스로 대체 가능해야 한다고 명시하고 있다.</p>
+
+<p>예를들어, 사용자와 연락하는(이메일 보내기와 같은) 책임을 가진 <code class="language-plaintext highlighter-rouge">UserService</code>라는 클래스가 하나 있다고 하자.</p>
+
+<p>만약 우리가 17세 이상의 사용자에게 이메일을 보내도록 비즈니스 로직을 변경해야 한다면, 새로운 비즈니스 로직을 가지는 서브클래스를 만들 수 있다</p>
+
+<p><br /></p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">UserService</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">contact</span><span class="p">(</span><span class="nv">user</span><span class="p">:</span> <span class="kt">User</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// Retrieve user from database</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="kt">ValidUserService</span><span class="p">:</span> <span class="kt">UserService</span> <span class="p">{</span>
+    <span class="k">override</span> <span class="kd">func</span> <span class="nf">contact</span><span class="p">(</span><span class="nv">user</span><span class="p">:</span> <span class="kt">User</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">guard</span> <span class="n">user</span><span class="o">.</span><span class="n">age</span> <span class="o">&gt;</span> <span class="mi">17</span> <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="p">}</span>
+
+        <span class="k">super</span><span class="o">.</span><span class="nf">contact</span><span class="p">(</span><span class="nv">user</span><span class="p">:</span> <span class="kt">User</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p><br /></p>
+
+<p>이런 경우에, 사용자의 나이가 17세 이상이라는 조건을 서브클래스가 추가했기 때문에 리스코브 치환 원칙은 충족되지 않는다.</p>
+
+<p>서브클래스를 추가하지 않고 <code class="language-plaintext highlighter-rouge">UserService</code>에 (기본값을 포함한)전제 조건을 추가하는 것으로 이러한 문제를 해결할 수 있다.
+<br /></p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">UserService</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">contact</span><span class="p">(</span><span class="nv">user</span><span class="p">:</span> <span class="kt">User</span><span class="p">,</span> <span class="nv">minAge</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">guard</span> <span class="n">user</span><span class="o">.</span><span class="n">age</span> <span class="o">&gt;</span> <span class="n">minAge</span> <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="p">}</span>
+        <span class="c1">// Retrieve user from database</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><br /></p>
+<hr />
+
+<p><br /></p>
+
+<h2 id="interface-segregation-principle-인터페이스-분리-원칙">Interface Segregation Principle 인터페이스 분리 원칙</h2>
+
+<p><br />
+인터페이스 분리 원칙은 일반적인 인터페이스를 가지는 것보다 구체적인 각각의 다른 인터페이스를 가지는 것이 낫다고 명시한다.</p>
+
+<p>또한, 사용하지 않는 메서드는 구현 할 필요가 없다는 것을 명시한다.</p>
+
+<p>예를들어, 동물이 움직이는 메소드를 포함한 <code class="language-plaintext highlighter-rouge">AnimalProtocol</code>을 만들어 보자.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">protocol</span> <span class="kt">AnimalProtocol</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">walk</span><span class="p">()</span>
+    <span class="kd">func</span> <span class="nf">swimm</span><span class="p">()</span>
+    <span class="kd">func</span> <span class="nf">fly</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="kd">struct</span> <span class="kt">Animal</span><span class="p">:</span> <span class="kt">AnimalProtocol</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">walk</span><span class="p">()</span> <span class="p">{}</span>
+    <span class="kd">func</span> <span class="nf">swimm</span><span class="p">()</span> <span class="p">{}</span>
+    <span class="kd">func</span> <span class="nf">fly</span><span class="p">()</span> <span class="p">{}</span>
+<span class="p">}</span>
+
+<span class="kd">struct</span> <span class="kt">Whale</span><span class="p">:</span> <span class="kt">AnimalProtocol</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">swimm</span><span class="p">()</span> <span class="p">{</span>
+    	<span class="c1">//Whale은 이 메소드만 구현하면 된다</span>
+        <span class="c1">//다른 메소드는 상관 없음</span>
+    <span class="p">}</span>
+    
+    <span class="kd">func</span> <span class="nf">walk</span><span class="p">()</span> <span class="p">{}</span>
+    
+    <span class="kd">func</span> <span class="nf">fly</span><span class="p">()</span> <span class="p">{}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p><br /></p>
+
+<p><code class="language-plaintext highlighter-rouge">Whale</code>이 프로토콜을 채택했음에도 메소드 두개는 구현하지 않게된다. 해결 방법은 각 3개의 인터페이스(프로토콜)을 만들어 각각 필요한 프로토콜만 채택하는 것이다.
+<br /></p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">protocol</span> <span class="kt">WalkProtocol</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">walk</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="kd">protocol</span> <span class="kt">SwimmProtocol</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">swimm</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="kd">protocol</span> <span class="kt">FlyProtocol</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">fly</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="kd">struct</span> <span class="kt">Whale</span><span class="p">:</span> <span class="kt">SwimmProtocol</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">swimm</span><span class="p">()</span> <span class="p">{}</span>
+<span class="p">}</span>
+
+<span class="kd">struct</span> <span class="kt">Crocodile</span><span class="p">:</span> <span class="kt">WalkProtocol</span><span class="p">,</span> <span class="kt">SwimmProtocol</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">walk</span><span class="p">()</span>
+    <span class="kd">func</span> <span class="nf">swimm</span><span class="p">()</span> <span class="p">{}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><br /></p>
+<hr />
+
+<p><br /></p>
+
+<h2 id="dependency-inversion-principle-의존성-역전-원칙">Dependency Inversion Principle 의존성 역전 원칙</h2>
+<p><br />
+이 원칙을 따르면</p>
+<ul>
+  <li>상위 클래스가 하위 클래스에 의존하지 않게 된다. 둘다 추상타입에 의존하게 된다.</li>
+  <li>추상타입은 구체타입에 의존하지 않게 된다. 구체타입이 추상타입에 의존하게 된다.</li>
+</ul>
+
+<p>이 원칙은 모듈간의 의존성을 낮추도록 하고 따라서 클래스간의 결합도를 낮추도록 한다.</p>
+
+<p>예제를 보자.</p>
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">User</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span>
+    
+    <span class="nf">init</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="kt">CoreData</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">save</span><span class="p">(</span><span class="nv">user</span><span class="p">:</span> <span class="kt">User</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// Save user on database</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="kt">UserService</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">save</span><span class="p">(</span><span class="nv">user</span><span class="p">:</span> <span class="kt">User</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">database</span> <span class="o">=</span> <span class="kt">CoreData</span><span class="p">()</span>
+        <span class="n">database</span><span class="o">.</span><span class="nf">save</span><span class="p">(</span><span class="nv">user</span><span class="p">:</span> <span class="n">user</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p><br /></p>
+
+<p>데이터를 저장할 때, <code class="language-plaintext highlighter-rouge">CoreData</code> 대신 Realm 데이터베이스를 사용하고 싶다면 어떻게 해야할까?
+위 예시처럼 클래스의 인스턴스는 강한 결합을 만들어내므로, 만약 다른 데이터베이스를 이용하고 싶다면 코드를 다시 실행해야 할 것이다.</p>
+
+<p>이것을 해결하기 위해, CoreData와 Realm이 공통적으로 채택할 프로토콜을 만들고, 데이터 저장하는 타입을 해당 프로토콜로 두면 된다.</p>
+
+<p><br /></p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">protocol</span> <span class="kt">Storable</span> <span class="p">{</span> <span class="p">}</span>
+
+<span class="kd">extension</span> <span class="kt">Object</span><span class="p">:</span> <span class="kt">Storable</span> <span class="p">{</span> <span class="p">}</span> <span class="c1">// Realm Database</span>
+
+<span class="kd">extension</span> <span class="kt">NSManagedObject</span><span class="p">:</span> <span class="kt">Storable</span> <span class="p">{</span> <span class="p">}</span> <span class="c1">// Core Data Database</span>
+
+<span class="kd">protocol</span> <span class="kt">StorageManager</span> <span class="p">{</span>
+  <span class="c1">/// Save Object into Realm database</span>
+  <span class="c1">/// - Parameter object: Realm object (as Storable)</span>
+  <span class="kd">func</span> <span class="nf">save</span><span class="p">(</span><span class="nv">object</span><span class="p">:</span> <span class="kt">Storable</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p><br /></p>
+
+<p><code class="language-plaintext highlighter-rouge">Storable</code> 프로토콜을 채택하는 <code class="language-plaintext highlighter-rouge">User</code> 와 <code class="language-plaintext highlighter-rouge">UserService</code> 클래스는 <code class="language-plaintext highlighter-rouge">StorageManager</code> 프로토콜을 채택하므로 데이터베이스를 변경하더라도 전체 구현 코드를 변경할 필요가 없다.</p>
+
+<p><br /></p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">User</span><span class="p">:</span> <span class="kt">Storable</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span>
+    
+    <span class="nf">init</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="kt">UserService</span><span class="p">:</span> <span class="kt">StorageManager</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">save</span><span class="p">(</span><span class="nv">object</span><span class="p">:</span> <span class="kt">Storable</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// Saves user to database</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+</code></pre></div></div>
+
+<p><br /></p>
+
+<h3 id="conclusion">Conclusion</h3>
+<p>이러한 원칙들이 재사용 가능하고, 유지보수가 용이한 더 높은 품질의 코드를 만들 수 있게 함으로써 코드의 경직되고 취약한 부분을 감소하게 할 것이다.</p>
+:ET

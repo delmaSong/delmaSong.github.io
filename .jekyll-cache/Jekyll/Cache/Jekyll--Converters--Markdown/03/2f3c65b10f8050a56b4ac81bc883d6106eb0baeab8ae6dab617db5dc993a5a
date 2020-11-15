@@ -1,0 +1,38 @@
+I"�<ul class="catalogue">
+
+
+
+<li class="catalogue-item">
+    <a href="/blog/SOLID_in_Swift/">
+        
+        
+        <p class="catalogue-type">
+            Swift
+        </p>
+        <div class="catalogue-info transition">
+            <h1 class="catalogue-title">
+                Swift 개발에 SOLID 적용하기
+            </h1>
+            <p class="catalogue-sub">
+                다 이유가 있는 SOLID
+            </p>
+            <p class="catalogue-body">
+                  해당 글은, 원문 글쓴이의 동의를 얻어 ‘SOLID Pirincipels Applied to Swift Development‘를 번역한 글입니다. 매끄러운 의미 전달을 위해 의역한 부분이...
+            </p>
+        </div>
+    </a>
+</li>    
+
+
+
+
+
+
+
+
+
+
+
+
+</ul>
+:ET
