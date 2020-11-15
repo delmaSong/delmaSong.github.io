@@ -4,6 +4,8 @@ title: "delmaSong"
 main: true
 subtitle: iOS App Developer delmaSong at POSTYPE
 description: delmaSong, who is an iOS App Developer based in Seoul, South Korea. | '송다영' iOS 앱 개발자입니다. 포스타입에서 일합니다.
+post-header: true
+header-img: ./img/header.png
 ---
 <div class="intro-animation">
 <section class="explanation">
