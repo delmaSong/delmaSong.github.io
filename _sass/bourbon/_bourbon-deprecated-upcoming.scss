@@ -6,7 +6,7 @@
   @warn "The inline-block mixin is deprecated and will be removed in the next major version release";
 }
 
-@mixin button ($style: simple, $base-color: #4294f0, $text-size: inherit, $padding: 7px 18px) {
+@mixin button ($style: simple, $base-color: #000000, $text-size: inherit, $padding: 7px 18px) {
 
   @if type-of($style) == string and type-of($base-color) == color {
     @include buttonstyle($style, $base-color, $text-size, $padding);
@@ -15,7 +15,7 @@
   @if type-of($style) == string and type-of($base-color) == number {
     $padding: $text-size;
     $text-size: $base-color;
-    $base-color: #4294f0;
+    $base-color: #000000;
 
     @if $padding == inherit {
       $padding: 7px 18px;
@@ -46,10 +46,10 @@
   @if type-of($style) == number {
     $padding: $base-color;
     $text-size: $style;
-    $base-color: #4294f0;
+    $base-color: #000000;
     $style: simple;
 
-    @if $padding == #4294f0 {
+    @if $padding == #000000 {
       $padding: 7px 18px;
     }
 
