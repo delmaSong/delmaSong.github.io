@@ -4,7 +4,7 @@ permalink:      /:year-:month-:day/:title
 # Setup
 title:          delmaSong
 baseurl:        ""
-url:            "http://www.delmaSong.github.io"
+url:            "https://www.delmaSong.github.io"
 
 # Assets
 sass:
@@ -17,7 +17,7 @@ markdown:       kramdown
 # About
 author:
   name:         delmaSong
-  url:          http://delmaSong.github.io/
+  url:          https://delmaSong.github.io/
   email:        sdy2856@gmail.com
   github:       delmaSong
 
