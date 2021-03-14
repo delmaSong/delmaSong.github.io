@@ -1,4 +1,15 @@
-# 다양한 상황에서 UILabel에 링크를 달아보자(without. TTTAttributedLabel)
+---
+layout: post
+title:  "다양한 상황에서 UILabel에 링크를 달아보자"
+subtitle: "without. TTTAttributedLabel"
+type: "Swift"
+blog: true
+text: true
+author: "Delma Song"
+post-header: true
+header-img: "img/header.jpg"
+order: 3
+---
 
 앱 개발을 하다보면 다양한 환경에서 텍스트와 링크를 연결해줘야하는 상황이 생기게 됩니다. 내용이 정해져있는 문자열이라면 특정 부분만 `UIButton`등으로 구현하는 방법을 사용할 수도 있습니다. 하지만 어떤 내용이 작성될 지 모르는 채팅창 내용에 URL 링크를 활성화시켜야 하는 경우라면 다른 방법이 필요할 것 같습니다.
 
