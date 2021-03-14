@@ -358,6 +358,12 @@ private func configureLabel() {
 
 
 
+프로젝트 전체 코드는 아래 레포지토리에서 확인 가능합니다
+
+https://github.com/delmaSong/LinkedLabel
+
+
+
 ### References
 
 - https://stackoverflow.com/questions/19417776/how-do-i-locate-the-cgrect-for-a-substring-of-text-in-a-uilabel
