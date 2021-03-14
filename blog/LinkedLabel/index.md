@@ -181,7 +181,7 @@ private func present(url string: String) {
 
 그럼 아래처럼 정해진 곳으로 잘 이동하는 것을 볼 수 있습니다.
 
-<img width=40% src="https://user-images.githubusercontent.com/40784518/110243463-cd8b8d00-7f9d-11eb-9c9d-b2fc113c59e0.gif"/>
+<img width="30%" src="https://user-images.githubusercontent.com/40784518/110243463-cd8b8d00-7f9d-11eb-9c9d-b2fc113c59e0.gif"/>
 
 
 
@@ -362,4 +362,4 @@ private func configureLabel() {
 
 - https://stackoverflow.com/questions/19417776/how-do-i-locate-the-cgrect-for-a-substring-of-text-in-a-uilabel
 - 회사 코드 쪼끔
-- 오픈 카톡방에서 attatchment에 url 담아보라 조언 주신 분
+- attatchment에 url 담아보라 조언 주신 분
