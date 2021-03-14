@@ -92,7 +92,7 @@ func configureLabel() {
 
 그럼 이미지와 같이 스타일이 적용된 `UILabel`을 볼 수 있습니다
 
-<img width="50%" src="https://user-images.githubusercontent.com/40784518/109514679-a50d1a00-7ae9-11eb-8856-ad4c7c8b7812.png"/>
+<img width="40%" src="https://user-images.githubusercontent.com/40784518/109514679-a50d1a00-7ae9-11eb-8856-ad4c7c8b7812.png"/>
 
 그렇지만 현재는 스타일만 적용된 상태로, 라벨의 google과 github 부분을 눌러도 아무런 일도 일어나지 않습니다.
 
@@ -234,7 +234,7 @@ private func present(url string: String) {
     }
 ```
 
-<img width="50%" src="https://user-images.githubusercontent.com/40784518/111070276-59f4fd00-8514-11eb-9bd6-1ebd3d82b30b.png">
+<img width="40%" src="https://user-images.githubusercontent.com/40784518/111070276-59f4fd00-8514-11eb-9bd6-1ebd3d82b30b.png">
 
  채팅 메시지처럼 다양한 문자열에 담겨있는 URL에 링크를 달기 위해 `NSAttributedString.Key`의 `.attachment` 키를 사용했습니다.  `.attachment` 키에 URL을 담고, 라벨이 tapped되었을 때 제스쳐가 감지한 `UILabel`의 `CGPoint`에 해당 attribute가 담겨있는지 확인하는 방법으로 구현하고자 했습니다. 그렇게 하면 어떤 문자열이던 URL인 경우라면 해당 URL로 링크를 걸어줄 수 있습니다. 
 
@@ -309,7 +309,7 @@ private func configureLabel() {
       range: NSRange(location: 0, length: messageText.count)
     )
     for m in matches {
-      if let url = m.url {						//1.
+      if let url = m.url {
         urlAttributes[.attachment] = url
         mutableString.setAttributes(urlAttributes, range: m.range)
       }
@@ -327,7 +327,7 @@ private func configureLabel() {
 
 `NSTextCheckingResult` 타입인 변수 `m`에 `url`이 담긴 경우 `urlAttributes[.attatchment]`에 `url`을 할당합니다. 그리고 앞서 선언된 `mutableString`에 `attributes`를 지정합니다. 그럼 아래처럼 URL인 부분과 그렇지 않은 부분에 구분되어 스타일이 적용됩니다.
 
-<img width="50%" src="https://user-images.githubusercontent.com/40784518/111071739-eb676d80-851a-11eb-8962-be3207628238.png">
+<img width="40%" src="https://user-images.githubusercontent.com/40784518/111071739-eb676d80-851a-11eb-8962-be3207628238.png">
 
 하지만 지금은 링크를 눌러도 아무런 변화가 일어나지 않습니다. 이제는 아까 만들어둔 CGPoint를 반환하는 함수를 이용할 때입니다.
 
